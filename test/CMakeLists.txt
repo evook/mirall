@@ -1,0 +1,34 @@
+include_directories(${CMAKE_BINARY_DIR}/csync ${CMAKE_BINARY_DIR}/csync/src ${CMAKE_BINARY_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/csync/src/ ${CMAKE_SOURCE_DIR}/csync/src/httpbf/src)
+include_directories(${CMAKE_SOURCE_DIR}/csync/src/std)
+
+include(owncloud_add_test.cmake)
+
+owncloud_add_test(OwncloudPropagator "")
+owncloud_add_test(Utility "")
+owncloud_add_test(Updater "")
+
+SET(FolderWatcher_SRC ../src/mirall/folderwatcher.cpp)
+
+IF( NOT WIN32 AND NOT APPLE )
+list(APPEND FolderWatcher_SRC  ../src/mirall/folderwatcher_linux.cpp)
+ENDIF()
+IF( WIN32 )
+list(APPEND  FolderWatcher_SRC ../src/mirall/folderwatcher_win.cpp)
+ENDIF()
+IF( APPLE )
+list(APPEND FolderWatcher_SRC ../src/mirall/folderwatcher_mac.cpp)
+ENDIF()
+
+owncloud_add_test(FolderWatcher "${FolderWatcher_SRC}")
+if( UNIX AND NOT APPLE )
+    owncloud_add_test(InotifyWatcher "${FolderWatcher_SRC}")
+endif(UNIX AND NOT APPLE)
+
+owncloud_add_test(CSyncSqlite "")
+owncloud_add_test(NetrcParser ../src/owncloudcmd/netrcparser.cpp)
+owncloud_add_test(OwnSql ../src/mirall/ownsql.cpp)
+owncloud_add_test(SyncJournalDB ../src/mirall/syncjournaldb.cpp)
+
+
+
